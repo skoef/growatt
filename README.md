@@ -28,14 +28,14 @@ func main() {
   fmt.Printf("found %d plants in your Growatt account\n", len(plants))
 
   for _, plant := range plants {
-    inverters, err := api.GetInverterList(plant.ID)
+    inverters, err := api.GetPlantInverterList(plant.ID)
     if err != nil {
       continue
     }
 
-    fmt.Printf("plant %d has %d inverters", len(inverters))
-    for _, inverter range inverters {
-      fmt.Printf("inverter %s is generating %0.2fW\n", inverter.CurrentPower)
+    fmt.Printf("plant %d has %d inverters\n", plant.ID, len(inverters))
+    for _, inverter := range inverters {
+      fmt.Printf("inverter %s is generating %0.2fW\n", inverter.Serial, inverter.CurrentPower)
     }
     fmt.Printf("the plant's total combined power is %0.2fW\n", plant.CurrentPower)
   }
