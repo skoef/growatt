@@ -1,0 +1,15 @@
+language: go
+
+go:
+  - "1.12"
+  - "1.x"
+
+before_install:
+  - GO111MODULE=off go get -u golang.org/x/lint/golint
+
+script:
+  - go test -v ./...
+  - FMT=$(git ls-files "*.go" | xargs gofmt -s -l)
+  - if [ ! -z "${FMT}" ]; then echo "gofmt failed on files ${FMT}"; exit 1; fi
+  - go vet ./...
+  - golint -set_exit_status ./...

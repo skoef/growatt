@@ -1,6 +1,6 @@
 # Growatt API Golang client
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/skoef/growatt)](https://goreportcard.com/report/github.com/skoef/growatt) [![Documentation](https://godoc.org/github.com/skoef/growatt?status.svg)](http://godoc.org/github.com/skoef/growatt)
+[![Go Report Card](https://goreportcard.com/badge/github.com/skoef/growatt)](https://goreportcard.com/report/github.com/skoef/growatt) [![Documentation](https://godoc.org/github.com/skoef/growatt?status.svg)](http://godoc.org/github.com/skoef/growatt) [![Building](https://travis-ci.com/skoef/growatt.svg?branch=master)](https://travis-ci.com/skoef/growatt/)
 
 This is a simple golang library using the rather quirky Growatt API on https://server.growatt.com. This libary is inspired by indykoning's [PyPi_GrowattServer](https://github.com/indykoning/PyPi_GrowattServer) and Sjord's [growatt_api_client](https://github.com/Sjord/growatt_api_client). It tries to normalize objects as much as possible, so API output is parsed and then converted into defined types within the library.
 
