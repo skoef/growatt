@@ -4,14 +4,14 @@ package growatt
 type Inverter struct {
 	IsLost        bool
 	InverterType  string
-	EnergyToday   float64
-	EnergyTotal   float64
+	EnergyToday   float64 // in kilowatthours
+	EnergyTotal   float64 // in kilowatthours
 	Location      string
 	Alias         string
 	Type          string
 	DatalogSerial string
 	Serial        string
-	CurrentPower  float64
+	CurrentPower  float64 // in watts
 	Status        int
 }
 
