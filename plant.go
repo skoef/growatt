@@ -17,8 +17,8 @@ type Plant struct {
 	CurrentPower float64 // in watts
 }
 
-// PlantEnergy is the amount of power the plant generated at a certain time
-type PlantEnergy struct {
+// TimeEnergy is the amount of power the plant generated at a certain time
+type TimeEnergy struct {
 	Timestamp time.Time
 	Power     float64 // in watts
 }

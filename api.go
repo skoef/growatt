@@ -53,7 +53,7 @@ func NewAPI(username, password string) *API {
 // - month (eg. "2019-01")
 // - day (eg. "2019-01-01")
 // any other format will result in error
-func (a API) GetPlantEnergy(plantID int, date string) ([]PlantEnergy, error) {
+func (a API) GetPlantEnergy(plantID int, date string) ([]TimeEnergy, error) {
 	var timespan int
 	var dateLayout string
 	dateFormat := "%s"
@@ -108,7 +108,7 @@ func (a API) GetPlantEnergy(plantID int, date string) ([]PlantEnergy, error) {
 		return nil, errors.New("could not convert energy data")
 	}
 
-	var result []PlantEnergy
+	var result []TimeEnergy
 	for k, v := range list {
 		normalizedDate := fmt.Sprintf(dateFormat, k)
 		ts, err := time.Parse(dateLayout, normalizedDate)
@@ -121,7 +121,7 @@ func (a API) GetPlantEnergy(plantID int, date string) ([]PlantEnergy, error) {
 			continue
 		}
 
-		result = append(result, PlantEnergy{
+		result = append(result, TimeEnergy{
 			Timestamp: ts,
 			Power:     pwr,
 		})
@@ -193,6 +193,55 @@ func (a API) GetPlantInverterList(plantID int) ([]Inverter, error) {
 	var result []Inverter
 	for _, d := range r.Devices {
 		result = append(result, parseInvertedData(d))
+	}
+
+	return result, nil
+}
+
+// GetInverterEnergy returns detailed energy information for an inverter with
+// given serial number for the given date. While GetPlantEnergy does support to
+// return result for multiple timespans (day, month, year) GetInverterEnergy only
+// supports results for a timespan of a day
+func (a API) GetInverterEnergy(inverterSerial string, date time.Time) ([]TimeEnergy, error) {
+	// prepare request
+	val := url.Values{}
+	val.Add("op", "getInverterData")
+	val.Add("id", inverterSerial)
+	// Not really sure what type 1 is, but different types seem to be returning
+	// values in different units. It's unlike the type of GetPlantEnergy which
+	// determines the timespan over which you want details
+	val.Add("type", "1")
+	val.Add("date", date.Format("2006-01-02"))
+
+	data, err := a.call("GET", "newInverterAPI.do", val.Encode())
+	if err != nil {
+		return nil, err
+	}
+
+	var r struct {
+		X map[string]interface{} `json:"-"` // we don't know the JSON keys
+	}
+
+	if err := json.Unmarshal(data, &r.X); err != nil {
+		return nil, err
+	}
+
+	pacData, ok := r.X["invPacData"].(map[string]interface{})
+	if !ok {
+		return nil, errors.New("could not convert energy data")
+	}
+
+	var result []TimeEnergy
+	for k, v := range pacData {
+		ts, err := time.Parse("2006-01-02 15:04", k)
+		if err != nil {
+			continue
+		}
+
+		result = append(result, TimeEnergy{
+			Timestamp: ts,
+			Power:     v.(float64),
+		})
 	}
 
 	return result, nil
