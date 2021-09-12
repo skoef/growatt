@@ -16,8 +16,8 @@ import (
 )
 
 const (
-	apiBasePath        = "https://server.growatt.com"
-	apiLoginPath       = "/LoginAPI.do"
+	apiBasePath        = "https://server-api.growatt.com"
+	apiLoginPath       = "/newLoginAPI.do"
 	apiCookieSessionID = "JSESSIONID"
 	apiCookieServerID  = "SERVERID"
 )
@@ -34,7 +34,6 @@ type API struct {
 	sessionID string
 	serverID  string
 	UserID    int
-	UserLevel int
 }
 
 // NewAPI returns a new API struct configured with authentication details
@@ -357,9 +356,11 @@ func (a *API) login() error {
 
 	var r struct {
 		Back struct {
-			UserID    int  `json:"userId"`
-			UserLevel int  `json:"userLevel"`
-			Success   bool `json:"success"`
+			User struct {
+				ID int `json:"id"`
+			} `json:"user"`
+			Success bool   `json:"success"`
+			Message string `json:"msg"`
 		} `json:"back"`
 	}
 
@@ -367,9 +368,12 @@ func (a *API) login() error {
 		return err
 	}
 
-	// record response meta data
-	a.UserID = r.Back.UserID
-	a.UserLevel = r.Back.UserLevel
+	if !r.Back.Success {
+		return fmt.Errorf("failed to login: %s", r.Back.Message)
+	}
+
+	// record relevant response meta data
+	a.UserID = r.Back.User.ID
 
 	return nil
 }

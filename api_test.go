@@ -31,8 +31,8 @@ func TestGetAPIURL(t *testing.T) {
 		query  string
 		output string
 	}{
-		{"/foo", "foo=bar", "https://server.growatt.com/foo?foo=bar"},
-		{"foo", "", "https://server.growatt.com/foo"},
+		{"/foo", "foo=bar", "https://server-api.growatt.com/foo?foo=bar"},
+		{"foo", "", "https://server-api.growatt.com/foo"},
 	}
 
 	for _, test := range tests {
