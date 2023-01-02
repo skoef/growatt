@@ -17,7 +17,7 @@ import (
 
 const (
 	apiBasePath        = "https://server-api.growatt.com"
-	apiLoginPath       = "/newLoginAPI.do"
+	apiLoginPath       = "/newTwoLoginAPI.do"
 	apiCookieSessionID = "JSESSIONID"
 	apiCookieServerID  = "SERVERID"
 )
